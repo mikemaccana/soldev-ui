@@ -13,7 +13,7 @@ import heroStyles from '@/styles/PageHero.module.css';
 import PageHero from '@/components/core/PageHero';
 import subnavStyles from '@/styles/core/subnav.module.css';
 import NextPrevButtons from '@/components/core/NextPrevButtons';
-import { SIMDAuthorLineItem } from '@/components/simd/SIMDTableLineItem';
+import { SIMDAuthorlesson } from '@/components/simd/SIMDTableLineItem';
 import { computeSlugForSIMD } from '@/utils/helpers';
 
 const ArticleContent = dynamic(() => import('@/components/ArticleContent'), {
@@ -233,7 +233,7 @@ export default function Page({ record, seo, slug, nextSlug, prevSlug }: PageProp
                   <p>Authors:</p>
                   <ul className="list-disc pl-8">
                     {record.metadata.authors.map((author, id) => (
-                      <SIMDAuthorLineItem key={id} author={author} />
+                      <SIMDAuthorlesson key={id} author={author} />
                     )) || <li>no authors found</li>}
                   </ul>
                 </li>

@@ -1,27 +1,33 @@
 import { computeSlugForSIMD } from '@/utils/helpers';
-import { fetchContent, fetchPulls, fetchRaw } from './fetch-github';
-
+import { fetchRaw, fetchPullRequests } from '@/utils/fetch-github';
+import { get } from 'fetch-unfucked';
 /**
  * fetch all SIMDs from the repository
  * @returns {Promise<Object>}
  */
-export const fetchRepoSIMD = async () => {
-  return await fetchContent('solana-foundation', 'solana-improvement-documents', 'proposals')
-    .then(res => res.json())
-    .then((response: RawGitHubPullContent[]) =>
-      response
-        .filter(item => item.type === 'file')
-        .map(
-          ({ sha, name, download_url, html_url }) =>
-            ({
-              id: sha, // use sha hash as id
-              name, // file name
-              download_url, // raw url
-              html_url, // github url
-              metadata: {} // initialize the metadata record
-            } as ParsedGitHubPullContent)
-        )
+export const fetchSIMDs = async () => {
+  const url =
+    'https://api.github.com/repos/solana-foundation/solana-improvement-documents/contents/proposals';
+  const response = await get(url);
+
+  if (response.status !== 'OK') {
+    throw new Error(`Error ${response.status} from ${url}`);
+  }
+
+  const fileMap = response.body
+    .filter(item => item.type === 'file')
+    .map(
+      ({ sha, name, download_url, html_url }) =>
+        ({
+          id: sha, // use sha hash as id
+          name, // file name
+          download_url, // raw url
+          html_url, // github url
+          metadata: {} // initialize the metadata record
+        } as ParsedGitHubPullContent)
     );
+
+  return fileMap;
 };
 
 /**
@@ -66,13 +72,13 @@ export function parseMetadata<ParsedGitHubMetaData>(data: string) {
  * @returns {Promise<Awaited<Response>[]>}
  */
 export async function fetchAllSIMD() {
-  const [pullRequests, repo] = await Promise.all([
-    fetchPulls('solana-foundation', 'solana-improvement-documents'),
-    fetchRepoSIMD()
+  const [pullRequests, SIMDs] = await Promise.all([
+    fetchPullRequests('solana-foundation', 'solana-improvement-documents'),
+    fetchSIMDs()
   ]);
 
   const records = await Promise.all(
-    [...pullRequests, ...repo].map(async item => {
+    [...pullRequests, ...SIMDs].map(async item => {
       if (!Array.isArray(item.download_url)) {
         item.download_url = [item.download_url];
       }

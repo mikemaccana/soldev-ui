@@ -1,4 +1,4 @@
-import styles from '@/styles/CourseModule.module.css';
+import styles from '@/styles/Unit.module.css';
 import Link from 'next/link';
 import clsx from 'clsx';
 
@@ -17,7 +17,7 @@ type ComponentProps = {
   isHidden?: boolean;
 };
 
-export default function CourseModuleItem({
+export default function Lesson({
   className,
   isActive,
   isSmall,
@@ -39,7 +39,7 @@ export default function CourseModuleItem({
   return (
     <section
       className={clsx(
-        isSmall ? styles.lineItemSmall : styles.lineItem,
+        isSmall ? styles.lessonSmall : styles.lesson,
         isActive && styles.lessonActive,
         isHidden === true && 'blur-sm'
       )}
@@ -56,7 +56,7 @@ export default function CourseModuleItem({
         {isComplete || isHovered ? <CheckIcon className="h-5 w-5" /> : <span>{lessonNumber}</span>}
       </button>
 
-      <div className={styles.lineItemMetaArea}>
+      <div className={styles.lessonMetaArea}>
         <h3>
           <Link href={isHidden === true ? '/course' : href}>
             <span>{title}</span>

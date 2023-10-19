@@ -5,7 +5,7 @@ import PlausibleProvider from 'next-plausible';
 import { DefaultSeo } from 'next-seo';
 import SEO from '@@/next-seo.config';
 
-import { Inter } from '@next/font/google';
+import { Inter } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({
